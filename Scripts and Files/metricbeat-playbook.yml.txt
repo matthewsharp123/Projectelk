@@ -1,0 +1,19 @@
+---
+- name: Metricbeat
+  hosts: webservers
+  become: true
+  tasks:
+  - name: metricbeat DL
+    command: curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.6.1-amd64.deb
+  - name: metricbeat install
+    command: sudo dpkg -i metricbeat-7.6.1-amd64.deb
+  - name: copy config.yml
+    copy:
+      src: /etc/ansible/files/metricbeat-config.yml
+      dest: /etc/metricbeat/metricbeat.yml
+  - name: enable system
+    command: metricbeat modules enable docker
+  - name: setup
+    command: metricbeat setup
+  - name: metricbeat start
+    command: service metricbeat start
